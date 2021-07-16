@@ -197,6 +197,9 @@ type VerifyOptions struct {
 	// Certificate.VerifyHostname or the platform verifier.
 	DNSName string
 
+	//SkipVerifyDnsName skip verify dns name for test use.
+	SkipVerifyDnsName bool
+
 	// Intermediates is an optional pool of certificates that are not trust
 	// anchors, but can be used to form a chain from the leaf certificate to a
 	// root certificate.
@@ -784,8 +787,7 @@ func (c *Certificate) Verify(opts VerifyOptions) (chains [][]*Certificate, err e
 		return
 	}
 
-	//todo sfl open dns name check
-	if len(opts.DNSName) > 0 {
+	if opts.SkipVerifyDnsName && len(opts.DNSName) > 0 {
 		err = c.VerifyHostname(opts.DNSName)
 		if err != nil {
 			return
