@@ -6,11 +6,12 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
-	"github.com/xiaotianfork/q-tls-common/sm3"
 	"golang.org/x/crypto/ripemd160"
 	"golang.org/x/crypto/sha3"
 	"hash"
 	"strconv"
+
+	"github.com/xiaotianfork/q-tls-common/sm3"
 )
 
 type Hash uint

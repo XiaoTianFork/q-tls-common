@@ -12,9 +12,10 @@ import (
 	"encoding/asn1"
 	"errors"
 	"fmt"
-	"github.com/xiaotianfork/qtls-go1-15/sm2"
 	"math/big"
 	"reflect"
+
+	"github.com/xiaotianfork/q-tls-common/sm2"
 )
 
 // pkcs8 reflects an ASN.1, PKCS #8 PrivateKey. See

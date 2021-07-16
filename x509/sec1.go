@@ -10,8 +10,9 @@ import (
 	"encoding/asn1"
 	"errors"
 	"fmt"
-	"github.com/xiaotianfork/qtls-go1-15/sm2"
 	"math/big"
+
+	"github.com/xiaotianfork/q-tls-common/sm2"
 )
 
 const ecPrivKeyVersion = 1
