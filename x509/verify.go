@@ -787,7 +787,7 @@ func (c *Certificate) Verify(opts VerifyOptions) (chains [][]*Certificate, err e
 		return
 	}
 
-	if opts.SkipVerifyDnsName && len(opts.DNSName) > 0 {
+	if !opts.SkipVerifyDnsName && len(opts.DNSName) > 0 {
 		err = c.VerifyHostname(opts.DNSName)
 		if err != nil {
 			return
