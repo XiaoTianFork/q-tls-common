@@ -2872,3 +2872,20 @@ func CreateRevocationList(rand io.Reader, template *RevocationList, issuer *Cert
 		SignatureValue:     asn1.BitString{Bytes: signature, BitLength: len(signature) * 8},
 	})
 }
+
+func MarshalSm2PublicKey(key *sm2.PublicKey) ([]byte, error) {
+	var r pkixPublicKey
+	var algo pkix.AlgorithmIdentifier
+
+	if key.Curve.Params() != sm2.P256Sm2().Params() {
+		return nil, errors.New("x509: unsupported elliptic curve")
+	}
+	algo.Algorithm = oidPublicKeyECDSA
+	algo.Parameters.Class = 0
+	algo.Parameters.Tag = 6
+	algo.Parameters.IsCompound = false
+	algo.Parameters.FullBytes = []byte{6, 8, 42, 129, 28, 207, 85, 1, 130, 45} // asn1.Marshal(asn1.ObjectIdentifier{1, 2, 156, 10197, 1, 301})
+	r.Algo = algo
+	r.BitString = asn1.BitString{Bytes: elliptic.Marshal(key.Curve, key.X, key.Y)}
+	return asn1.Marshal(r)
+}
