@@ -164,6 +164,6 @@ func (s *CertPool) Subjects() [][]byte {
 	return res
 }
 
-func TStandCertPool(certPool *CertPool) *x509.CertPool {
+func ToStandCertPool(certPool *CertPool) *x509.CertPool {
 	return (*x509.CertPool)(unsafe.Pointer(certPool))
 }
