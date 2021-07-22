@@ -17,6 +17,7 @@ import (
 	_ "crypto/sha1"
 	_ "crypto/sha256"
 	_ "crypto/sha512"
+	sx509 "crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/pem"
@@ -30,6 +31,7 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+	"unsafe"
 
 	"golang.org/x/crypto/cryptobyte"
 	cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
@@ -2888,4 +2890,8 @@ func MarshalSm2PublicKey(key *sm2.PublicKey) ([]byte, error) {
 	r.Algo = algo
 	r.BitString = asn1.BitString{Bytes: elliptic.Marshal(key.Curve, key.X, key.Y)}
 	return asn1.Marshal(r)
+}
+
+func ToStandX509Cert(certificate *Certificate) *sx509.Certificate{
+	return (*sx509.Certificate)(unsafe.Pointer(certificate))
 }
