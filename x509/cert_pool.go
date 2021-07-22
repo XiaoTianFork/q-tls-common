@@ -5,9 +5,11 @@
 package x509
 
 import (
+	"crypto/x509"
 	"encoding/pem"
 	"errors"
 	"runtime"
+	"unsafe"
 )
 
 // CertPool is a set of certificates.
@@ -160,4 +162,8 @@ func (s *CertPool) Subjects() [][]byte {
 		res[i] = c.RawSubject
 	}
 	return res
+}
+
+func TStandCertPool(certPool *CertPool) *x509.CertPool {
+	return (*x509.CertPool)(unsafe.Pointer(certPool))
 }
