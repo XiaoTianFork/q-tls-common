@@ -8,7 +8,7 @@ package x509
 
 import (
 	"bytes"
-	macOS "crypto/x509/internal/macos"
+	macOS "github.com/xiaotianfork/q-tls-common/x509/internal/macos"
 	"fmt"
 	"os"
 	"strings"
