@@ -284,8 +284,14 @@ static int CopyPEMRoots(CFDataRef *pemRoots, CFDataRef *untrustedPemRoots, bool 
 import "C"
 import (
 	"errors"
+	"os"
+	"strings"
 	"unsafe"
 )
+
+var loadSystemRootsWithCgo func() (*CertPool, error)
+
+var debugDarwinRoots = strings.Contains(os.Getenv("GODEBUG"), "x509roots=1")
 
 func init() {
 	loadSystemRootsWithCgo = _loadSystemRootsWithCgo
