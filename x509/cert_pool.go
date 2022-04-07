@@ -5,6 +5,7 @@
 package x509
 
 import (
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
@@ -14,9 +15,48 @@ import (
 
 // CertPool is a set of certificates.
 type CertPool struct {
-	byName         map[string][]int
+	byName map[string][]int
+	// lazyCerts contains funcs that return a certificate,
+	// lazily parsing/decompressing it as needed.
+	lazyCerts []lazyCert
+
+	// haveSum maps from sum224(cert.Raw) to true. It's used only
+	// for AddCert duplicate detection, to avoid CertPool.contains
+	// calls in the AddCert path (because the contains method can
+	// call getCert and otherwise negate savings from lazy getCert
+	// funcs).
+	haveSum map[sum224]bool
+
+	// systemPool indicates whether this is a special pool derived from the
+	// system roots. If it includes additional roots, it requires doing two
+	// verifications, one using the roots provided by the caller, and one using
+	// the system platform verifier.
+	systemPool bool
+
 	bySubjectKeyId map[string][]int
 	certs          []*Certificate
+}
+
+type sum224 [sha256.Size224]byte
+
+// lazyCert is minimal metadata about a Cert and a func to retrieve it
+// in its normal expanded *Certificate form.
+type lazyCert struct {
+	// rawSubject is the Certificate.RawSubject value.
+	// It's the same as the CertPool.byName key, but in []byte
+	// form to make CertPool.Subjects (as used by crypto/tls) do
+	// fewer allocations.
+	rawSubject []byte
+
+	// getCert returns the certificate.
+	//
+	// It is not meant to do network operations or anything else
+	// where a failure is likely; the func is meant to lazily
+	// parse/decompress data that is already known to be good. The
+	// error in the signature primarily is meant for use in the
+	// case where a cert file existed on local disk when the program
+	// started up is deleted later before it's read.
+	getCert func() (*Certificate, error)
 }
 
 // NewCertPool returns a new, empty CertPool.
